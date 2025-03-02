@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ResCard from "./card";
 import { useState, useEffect } from "react";
 
@@ -10,11 +11,17 @@ const Body = () => {
   }, []);
 
   const fetchData = async () => {
-    const data = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627");
-    const product = await data.json();
-    console.log(product.data.cards[4].card.card.gridElements.infoWithStyle.restaurants);
-    setList(product?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-    setfilteredRestaurant(product?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants)
+    const data = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=25.2379152&lng=86.9833671&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+    const json = await data.json();
+
+    console.log("Body component");
+    console.log(json);
+    
+    
+    console.log(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    
+    setList(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    setfilteredRestaurant(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants)
   };
 
   return (
@@ -33,7 +40,7 @@ const Body = () => {
         className="top-rated"
         onClick={() => {
           const filtered = filteredRestaurant.filter(
-            (res) => res.info.avgRating> 4.5
+            (res) => res.info.avgRating> 4
           );
           setfilteredRestaurant(filtered);
         }}
@@ -42,7 +49,9 @@ const Body = () => {
       </button>
       <div className="res-container">
         {filteredRestaurant.map((res) => (
-          <ResCard key={res?.info?.id} resData={res.info} />
+          <Link key={res?.info?.id} to={`/restaurants/${res?.info?.id}`}>
+            <ResCard resData={res.info} />
+          </Link>
         ))}
       </div>
     </div>
